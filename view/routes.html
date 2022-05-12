@@ -28,11 +28,13 @@
       <form id="form">
         <div class="mb-3">
           <label for="route_type" class="form-label">Tipo de ruta</label>
-          <input type="text" class="form-control" id="routeType" name="route_type" minlength="5" maxlength="20" required>
+          <input list="route_types" class="form-control" id="routeType" name="route_type" minlength="5" maxlength="20" required>
+          <datalist id="route_types"></datalist>
         </div>
         <div class="mb-3">
           <label for="street_type" class="form-label">Tipo de calle</label>
-          <input type="text" class="form-control" id="streetType" name="street_type" minlength="10" maxlength="100" required>
+          <input list="street_types" class="form-control" id="streetType" name="street_type" minlength="10" maxlength="100" required>
+          <datalist id="street_types"></datalist>
         </div>
         <div class="mb-3">
           <label for="number" class="form-label">Número</label>
@@ -40,7 +42,7 @@
         </div>
         <div class="mb-3">
           <label for="con_lvl" class="form-label">Nivel de contingencia</label>
-          <input type="number" class="form-control" id="conLvl" name="con_lvl" min="2" max="100" step=".01" required>
+          <input type="number" class="form-control" id="conLvl" name="con_lvl" min="0" max="100" step=".01" required>
         </div>
         <button id="btn_form" type="submit" class="btn btn-primary">Crear</button>
         <button id="btn_form_cancel" type="reset" class="btn btn-primary">Cancelar</button>

@@ -1,22 +1,59 @@
+let baseUrl= 'http://localhost:8080';
+
 document.addEventListener('DOMContentLoaded', () => {
-  loadRoutes('http://localhost:8080/agents');
+  loadRouteTypes(baseUrl+'/route_types');
+  loadStreetTypes(baseUrl+'/street_types');
+  loadRoutes(baseUrl+'/routes');
   document.querySelector('form').addEventListener('submit', () => {
     //event.preventDefault();
     let form= event.currentTarget;
     console.log(form);
-    createAgent('http://localhost:8080/agents', form['code'].value, form['full_name'].value, form['experience_year'].value, form['transit_code'].value);
+    createRoute(baseUrl+'/routes', form['route_type'].value, form['street_type'].value, form['number'].value, form['con_lvl'].value, form['id'].value);
   })
   document.getElementById('btn_form_cancel').addEventListener('click', () => {
-    document.querySelector('form')['code'].removeAttribute('readonly');
+    document.querySelector('form')['id'].remove();
   });
 });
 
-function createAgent(url, code, fullName, exp, tranCode){
+function loadRouteTypes(url){
+  fetch(url)
+  .then(response => response.json())
+  .then(data => {
+    //console.log(data);
+    let dataList= document.getElementById('route_types');
+    data.forEach(rt => {
+      let option= document.createElement('option');
+      option.value= rt['routeType'];
+      dataList.appendChild(option);
+    });
+  }).catch(err => {
+    console.log(`Error getting route types: ${err}`);
+  })
+}
+
+function loadStreetTypes(url){
+  fetch(url)
+  .then(response => response.json())
+  .then(data => {
+    //console.log(data);
+    let dataList= document.getElementById('street_types');
+    data.forEach(st => {
+      let option= document.createElement('option');
+      option.value= st['type'];
+      dataList.appendChild(option);
+    });
+  }).catch(err => {
+    console.log(`Error getting street types: ${err}`);
+  })
+}
+
+function createRoute(url, routeType, streetType, number, conLvl, id){
   data= {
-    code: code,
-    full_name: fullName,
-    experience_year: exp,
-    transit_code: tranCode
+    route_type: routeType,
+    street_type: streetType,
+    number: number,
+    contingency_level: conLvl,
+    id: id
   };
   fetch(url, {
     method: "POST",
@@ -26,9 +63,13 @@ function createAgent(url, code, fullName, exp, tranCode){
     body: JSON.stringify(data)
   }).then(response => response.json())
   .then(data => {
-    console.log(data);
+    if(data){
+      console.log(data);
+    }else{
+      alert(`The route already exists`);
+    }
   }).catch(err => {
-    console.log('Error creating the agent: ', err);
+    console.log('Error creating the route: ', err);
   });
 }
 
@@ -40,32 +81,32 @@ function loadRoutes(url){
     let tbody= document.querySelector('tbody');
     tbody.textContent= '';
     data.forEach(r => {
-      //console.log(a);
+      //console.log(r);
       let tr= document.createElement('tr');
-      for(let p in r){
-        let td= document.createElement('td');
-        if(r[p]){
-          td.textContent= r[p];
-        }else{
-          td.textContent= 'Sin datos';
-        }
-        tr.appendChild(td);
-      }
+      let tdRouteType= document.createElement('td');
+      let tdStreetType= document.createElement('td');
+      let tdNumber= document.createElement('td');
+      let tdConLvl= document.createElement('td');
+      tdRouteType.textContent= r['routeType']['routeType'];
+      tdStreetType.textContent= r['type']['type'];
+      tdNumber.textContent= r['number'];
+      tdConLvl.textContent= r['conLevel'];
+      tr.appendChild(tdRouteType);
+      tr.appendChild(tdStreetType);
+      tr.appendChild(tdNumber);
+      tr.appendChild(tdConLvl);
       let ul = document.createElement('ul');
       ul.appendChild(createActionButton('Editar', () => {
-        editAgent(r);
+        editRoute(r);
       }));
       ul.appendChild(createActionButton('Eliminar', () => {
-        deleleteAgent(`http://localhost:8080/agents/${r['code']}`);
-      }));
-      ul.appendChild(createActionButton('Asignar vía', () => {
-        addRoute();
+        deleteRoute(`${baseUrl}/routes/${r['id']}`);
       }));
       tr.appendChild(ul);
       tbody.appendChild(tr);
     })
   }).catch(err => {
-    console.log('Error while loading agents: ', err);
+    console.log('Error while loading routes: ', err);
   });
 }
 
@@ -76,29 +117,33 @@ function createActionButton(text, f){
   return btn;
 }
 
-function deleleteAgent(url){
+function deleteRoute(url){
   fetch(url, {
     method: 'POST',
   }).then(response => response.json())
   .then(data => {
-    alert(`The agent ${data['fullName']} was deleted`);
-    loadRoutes('http://localhost:8080/agents');
+    alert(`The route ${data['id']} ${data['number']} was deleted`);
+    loadRoutes(baseUrl+'/routes');
   }).catch(err => {
-    console.log(`Error deleting the agent ${data['fullName']} with error ${err}`);
+    console.log(`Error deleting the route ${data['id']} with error ${err}`);
   })
 }
 
-function editAgent(agent){
+function editRoute(route){
   let form= document.querySelector('form');
   //console.log(agent);
-  form['code'].value= agent['code'];
-  form['code'].setAttribute('readonly', true);
-  form['full_name'].value= agent['fullName'];
-  form['exp'].value= agent['experienceYear'];
-  form['transit_code'].value= agent['transitCode'];
-  form['code'].focus();
+  form['routeType'].value= route['routeType']['routeType'];
+  form['streetType'].value= route['type']['type'];
+  form['number'].value= route['number'];
+  form['conLvl'].value= route['conLevel'];
+  let inputId= document.createElement('input');
+  inputId.setAttribute('name', 'id');
+  inputId.type= 'hidden';
+  inputId.value= route['id'];
+  form.appendChild(inputId);
+  form['routeType'].focus();
 }
 
-function addRoute(agent){
+function addAgent(agent){
 
 }

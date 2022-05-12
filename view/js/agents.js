@@ -4,14 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
     //event.preventDefault();
     let form= event.currentTarget;
     console.log(form);
-    createAgent('http://localhost:8080/agents', form['code'].value, form['full_name'].value, form['experience_year'].value, form['transit_code'].value);
+    createRoute('http://localhost:8080/agents', form['code'].value, form['full_name'].value, form['experience_year'].value, form['transit_code'].value);
   })
   document.getElementById('btn_form_cancel').addEventListener('click', () => {
     document.querySelector('form')['code'].removeAttribute('readonly');
   });
 });
 
-function createAgent(url, code, fullName, exp, tranCode){
+function createRoute(url, code, fullName, exp, tranCode){
   data= {
     code: code,
     full_name: fullName,
@@ -53,10 +53,10 @@ function loadRoutes(url){
       }
       let ul = document.createElement('ul');
       ul.appendChild(createActionButton('Editar', () => {
-        editAgent(a);
+        editRoute(a);
       }));
       ul.appendChild(createActionButton('Eliminar', () => {
-        deleleteAgent(`http://localhost:8080/agents/${a['code']}`);
+        deleteRoute(`http://localhost:8080/agents/${a['code']}`);
       }));
       ul.appendChild(createActionButton('Asignar vía', () => {
         addRoute();
@@ -76,7 +76,7 @@ function createActionButton(text, f){
   return btn;
 }
 
-function deleleteAgent(url){
+function deleteRoute(url){
   fetch(url, {
     method: 'POST',
   }).then(response => response.json())
@@ -88,7 +88,7 @@ function deleleteAgent(url){
   })
 }
 
-function editAgent(agent){
+function editRoute(agent){
   let form= document.querySelector('form');
   //console.log(agent);
   form['code'].value= agent['code'];

@@ -52,5 +52,18 @@ public class RouteService {
       return null;
     }
   }
+
+  public TransitRoute update(long id, RouteType routeType, StreetType streetType, int number, double conLevel){
+    Optional<TransitRoute> optional= transitRouteRepository.findById(id);
+    if(optional.isPresent()){
+      optional.get().setRouteType(routeType);
+      optional.get().setType(streetType);
+      optional.get().setNumber(number);
+      optional.get().setConLevel(conLevel);
+      return transitRouteRepository.save(optional.get());
+    }else{
+      return null;
+    }
+  }
   
 }

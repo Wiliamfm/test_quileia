@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,7 +47,11 @@ public class RouteController {
       if(routeType != null){
         StreetType streetType= streetService.getByName(data.get("street_type"));
         if(streetType != null){
-          return routeService.create(routeType, streetType, Integer.parseInt(data.get("number")), Double.parseDouble(data.get("contingency_level")));
+          if(data.get("id") != null){
+            return routeService.update(Long.parseLong(data.get("id")) ,routeType, streetType, Integer.parseInt(data.get("number")), Double.parseDouble(data.get("contingency_level")));
+          }else{
+            return routeService.create(routeType, streetType, Integer.parseInt(data.get("number")), Double.parseDouble(data.get("contingency_level")));
+          }
         }else{
           System.err.println(String.format("Street [%s] not found", data.get("street_type")));
           return null;
