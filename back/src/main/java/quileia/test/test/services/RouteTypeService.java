@@ -23,6 +23,11 @@ public class RouteTypeService {
     return routeTypeRepository.findAll();
   }
 
+  public RouteType getById(long id){
+    Optional<RouteType> optional= routeTypeRepository.findById(id);
+    return optional.isPresent() ? optional.get() : null;
+  }
+
   public RouteType getByName(String name){
     Optional<RouteType> optional= routeTypeRepository.findByRouteType(name);
     return optional.isPresent() ? optional.get() : null;

@@ -27,5 +27,10 @@ public class StreetService {
     Optional<StreetType> optional= streetRepository.findByType(name);
     return optional.isPresent() ? optional.get() : null;
   }
+
+  public StreetType getById(long id){
+    Optional<StreetType> optional= streetRepository.findById(id);
+    return optional.isPresent() ? optional.get() : null;
+  }
   
 }
