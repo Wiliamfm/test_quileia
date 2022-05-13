@@ -5,9 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
   loadStreetTypes(baseUrl+'/street_types');
   loadRoutes(baseUrl+'/routes');
   document.querySelector('form').addEventListener('submit', () => {
-    //event.preventDefault();
+    event.preventDefault();
     let form= event.currentTarget;
-    console.log(form);
+    //console.log(form);
     createRoute(baseUrl+'/routes', form['route_type'].value, form['street_type'].value, form['number'].value, form['con_lvl'].value, form['id'].value);
   })
   document.getElementById('btn_form_cancel').addEventListener('click', () => {
@@ -61,10 +61,15 @@ function createRoute(url, routeType, streetType, number, conLvl, id){
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(data)
-  }).then(response => response.json())
+  }).then(response => {
+    return response.text();
+  })
   .then(data => {
+    console.log(`Data--------- --${data}--`);
     if(data){
-      console.log(data);
+      //console.log(data);
+      loadRoutes(baseUrl+'/routes');
+      document.getElementById('form').reset();
     }else{
       alert(`The route already exists`);
     }
@@ -130,6 +135,7 @@ function deleteRoute(url){
 }
 
 function editRoute(route){
+  document.getElementById('btn_form_cancel').click();
   let form= document.querySelector('form');
   //console.log(agent);
   form['routeType'].value= route['routeType']['routeType'];

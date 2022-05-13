@@ -54,16 +54,26 @@ public class RouteService {
   }
 
   public TransitRoute update(long id, RouteType routeType, StreetType streetType, int number, double conLevel){
-    Optional<TransitRoute> optional= transitRouteRepository.findById(id);
-    if(optional.isPresent()){
-      optional.get().setRouteType(routeType);
-      optional.get().setType(streetType);
-      optional.get().setNumber(number);
-      optional.get().setConLevel(conLevel);
-      return transitRouteRepository.save(optional.get());
+    if(findByAddress(routeType.getRouteType(), streetType.getType(), number) == null){
+      Optional<TransitRoute> optional= transitRouteRepository.findById(id);
+      if(optional.isPresent()){
+        optional.get().setRouteType(routeType);
+        optional.get().setType(streetType);
+        optional.get().setNumber(number);
+        optional.get().setConLevel(conLevel);
+        return transitRouteRepository.save(optional.get());
+      }else{
+        return null;
+      }
     }else{
+      System.out.println(String.format("The route with type [%s] and street [%s] with number [%s] already exists", routeType.getRouteType(), streetType.getType(), number));
       return null;
     }
+  }
+
+  public TransitRoute getById(long id){
+    Optional<TransitRoute> optional= transitRouteRepository.findById(id);
+    return optional.isPresent() ? optional.get() : null;
   }
   
 }

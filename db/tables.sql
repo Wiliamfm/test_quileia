@@ -26,3 +26,11 @@ create table transit_agent(
 
 alter table transit_agent
 add constraint unique_route_transit unique(transit_route); 
+
+create table agent_auditory(
+  id serial primary key,
+  agent varchar(20) references transit_agent (id) on delete set null,
+  route integer references transit_route (id) on delete set null,
+  start_date timestamp not null,
+  end_date timestamp
+);
