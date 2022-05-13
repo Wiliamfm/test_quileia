@@ -107,6 +107,9 @@ function loadRoutes(url){
       ul.appendChild(createActionButton('Eliminar', () => {
         deleteRoute(`${baseUrl}/routes/${r['id']}`);
       }));
+      ul.appendChild(createActionButton('Mostrar historial', () => {
+        showRouteHistory(r);
+      }));
       tr.appendChild(ul);
       tbody.appendChild(tr);
     })
@@ -152,4 +155,10 @@ function editRoute(route){
 
 function addAgent(agent){
 
+}
+
+function showRouteHistory(route){
+  window.sessionStorage.setItem('resource_id', route['id']);
+  window.sessionStorage.setItem('resource', 'routes');
+  window.location= './auditory.html';
 }

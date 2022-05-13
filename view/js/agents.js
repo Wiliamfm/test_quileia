@@ -77,6 +77,9 @@ function loadAgents(url){
       ul.appendChild(createActionButton('Asignar vía', () => {
         addRoute(a);
       }));
+      ul.appendChild(createActionButton('Historial de vías', () => {
+        showRouteHistory(a);
+      }));
       tr.appendChild(ul);
       tbody.appendChild(tr);
     })
@@ -174,4 +177,10 @@ function loadStreetTypes(url){
   }).catch(err => {
     console.log(`Error getting street types: ${err}`);
   })
+}
+
+function showRouteHistory(agent){
+  window.sessionStorage.setItem('resource_id', agent['code']);
+  window.sessionStorage.setItem('resource', 'agents');
+  window.location= './auditory.html';
 }
